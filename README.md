@@ -99,36 +99,12 @@ npm run install:all
 cd backend
 cp .env.example .env
 ```
-
-Edit `backend/.env`:
-
-```env
-PORT=5000
-NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/portfolio
-JWT_SECRET=your_super_secret_key_minimum_32_characters
-JWT_EXPIRE=30d
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your@gmail.com
-EMAIL_PASS=your_app_password        # Gmail App Password
-EMAIL_FROM=your@gmail.com
-FRONTEND_URL=http://localhost:3000
-ADMIN_EMAIL=admin@portfolio.com
-ADMIN_PASSWORD=Admin@123456
-```
-
 ### 3 — Seed the Database
 
 ```bash
 cd backend
 npm run seed
 ```
-
-This creates:
-- 6 sample projects (3 personal + 3 college)
-- 20 skills across categories
-- Admin user with the credentials from your `.env`
 
 ### 4 — Run Both Servers
 
@@ -146,121 +122,6 @@ cd backend && npm run dev
 cd frontend && npm start
 ```
 
-### 5 — Access the App
-
-| URL | Description |
-|-----|-------------|
-| `http://localhost:3000` | Portfolio frontend |
-| `http://localhost:3000/admin/login` | Admin panel login |
-| `http://localhost:5000/api/health` | API health check |
-| `http://localhost:5000/api/projects` | Projects API |
-
----
-
-## 🔧 Customization Checklist
-
-### Personal Info (must update)
-- [ ] **`frontend/public/index.html`** — name, description, Twitter handle, OG URL
-- [ ] **`frontend/src/components/pages/HomePage.jsx`** — your name, bio, GitHub/LinkedIn URLs
-- [ ] **`frontend/src/components/pages/AboutPage.jsx`** — bio text, skills, timeline entries
-- [ ] **`frontend/src/components/layout/Navbar.jsx`** — logo text, nav links
-- [ ] **`frontend/src/components/layout/Footer.jsx`** — social links
-- [ ] **`frontend/public/manifest.json`** — app name
-- [ ] **`frontend/public/robots.txt`** — your domain
-- [ ] **Avatar image** — replace the GitHub avatar URL with your own photo
-- [ ] **Resume** — add `frontend/public/resume.pdf`
-
-### Projects
-Add via the Admin Panel at `/admin` or directly via the API:
-```bash
-curl -X POST http://localhost:5000/api/projects \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"title":"My Project","description":"...","techStack":["React","Node.js"],"type":"personal"}'
-```
-
----
-
-## 🌐 Deployment
-
-### Frontend → Vercel
-
-```bash
-cd frontend
-npm run build
-
-# Install Vercel CLI
-npm i -g vercel
-vercel --prod
-```
-
-Add environment variable in Vercel dashboard:
-```
-REACT_APP_API_URL=https://your-backend.onrender.com/api
-```
-
-### Backend → Render
-
-1. Push code to GitHub
-2. Create new **Web Service** on [render.com](https://render.com)
-3. Set **Root Directory** to `backend`
-4. Set **Build Command**: `npm install`
-5. Set **Start Command**: `npm start`
-6. Add all environment variables from `.env` (use `MONGODB_URI_PROD` with Atlas URI)
-
-### Database → MongoDB Atlas
-
-1. Create cluster at [cloud.mongodb.com](https://cloud.mongodb.com)
-2. Create database user and whitelist IPs (0.0.0.0/0 for Render)
-3. Copy connection string to `MONGODB_URI_PROD` in your `.env`
-4. Run the seed script pointing to Atlas:
-   ```bash
-   MONGODB_URI=mongodb+srv://... node backend/utils/seed.js
-   ```
-
-### HTTPS / SSL
-- **Vercel** — HTTPS automatic on all deployments
-- **Render** — HTTPS automatic on `.onrender.com` domains
-- **Custom domain** — add in Vercel/Render dashboard; certificates auto-provisioned via Let's Encrypt
-
----
-
-## 🔑 API Reference
-
-### Projects
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/projects` | ❌ | List all projects (supports `?type=college&category=web&featured=true&search=react&page=1`) |
-| GET | `/api/projects/college` | ❌ | College projects only |
-| GET | `/api/projects/:id` | ❌ | Single project |
-| POST | `/api/projects` | ✅ Admin | Create project |
-| PUT | `/api/projects/:id` | ✅ Admin | Update project |
-| DELETE | `/api/projects/:id` | ✅ Admin | Delete project |
-
-### Contact
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/contact` | ❌ | Submit contact form |
-| GET | `/api/contact` | ✅ Admin | List all messages |
-| PATCH | `/api/contact/:id` | ✅ Admin | Update message status |
-
-### Skills
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/skills` | ❌ | All skills (grouped by category) |
-| POST | `/api/skills` | ✅ Admin | Create skill |
-| PUT | `/api/skills/:id` | ✅ Admin | Update skill |
-| DELETE | `/api/skills/:id` | ✅ Admin | Delete skill |
-
-### Auth
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/login` | ❌ | Admin login → returns JWT |
-| GET | `/api/auth/me` | ✅ | Get current user |
-
----
-
-## ✨ Features
 
 ### Frontend
 - ⚡ React 18 with code splitting & lazy loading
@@ -282,27 +143,6 @@ REACT_APP_API_URL=https://your-backend.onrender.com/api
 - 🗜️ Gzip compression
 - 🌱 Database seeder with sample data
 
-### PWA
-- 📲 Installable on mobile & desktop
-- 📶 Offline fallback via service worker
-- ⚡ Static asset caching
-
----
-
-## 🚀 Advanced Features to Add (2026 Roadmap)
-
-| Feature | Complexity | Impact |
-|---------|-----------|--------|
-| **AI Chatbot** — OpenAI-powered chat widget that answers visitor questions about your experience | Medium | ⭐⭐⭐⭐⭐ |
-| **Analytics Dashboard** — Plausible/Umami self-hosted privacy-friendly analytics | Low | ⭐⭐⭐⭐ |
-| **Blog Section** — MDX-powered blog with syntax highlighting and reading time | Medium | ⭐⭐⭐⭐ |
-| **GitHub Activity Feed** — Live GitHub contribution graph via API | Low | ⭐⭐⭐ |
-| **3D Hero** — Three.js particle background or 3D avatar with React Three Fiber | High | ⭐⭐⭐⭐ |
-| **Resume Parser** — AI that reads your PDF resume and auto-populates skills | High | ⭐⭐⭐⭐ |
-| **Visitor Counter** — Redis-backed real-time visitor count | Low | ⭐⭐ |
-| **Internationalization (i18n)** — Multi-language support with react-i18next | Medium | ⭐⭐⭐ |
-| **Project Case Studies** — Rich project detail pages with MDX content | Medium | ⭐⭐⭐⭐ |
-| **Testimonials Section** — Carousel with LinkedIn recommendations | Low | ⭐⭐⭐ |
 
 ---
 
